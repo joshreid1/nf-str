@@ -67,4 +67,4 @@ jobs:
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
             micromamba run -n atarva atarva --version
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            micromamba run -n longTR longTR --version
+            micromamba run -n longTR LongTR --version
