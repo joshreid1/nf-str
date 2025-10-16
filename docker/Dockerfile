@@ -11,9 +11,6 @@ RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl https://sh.rustup.rs -sSf > rustup-init.sh
-RUN sh ./rustup-init.sh -y
-ENV PATH="/root/.cargo/bin:${PATH}"
 
 WORKDIR /app
 COPY environments/ /app/environments/
