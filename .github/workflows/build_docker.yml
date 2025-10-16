@@ -4,7 +4,8 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - docker/**
+      - docker/Dockerfile
+      - docker/environments/**
   pull_request:
     branches: [main]
   workflow_dispatch:
