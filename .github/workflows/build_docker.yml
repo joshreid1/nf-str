@@ -2,9 +2,7 @@ name: Build and Push Docker Image
 
 on:
   push:
-    paths:
-      - docker/Dockerfile
-      - docker/environments/**
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -19,7 +17,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,7 +48,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: docker/
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
