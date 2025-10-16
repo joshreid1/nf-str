@@ -14,4 +14,4 @@ dependencies:
   - blast
   - pip
   - pip:
-      - git+https://github.com/bcgsc/straglr.git@v1.3.0#egg=straglr
+      - git+https://github.com/bcgsc/straglr.git@v1.5.5
