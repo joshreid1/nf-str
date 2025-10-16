@@ -22,7 +22,8 @@ RUN apt-get update && apt-get install -y \
 
 
 WORKDIR /app
-COPY environments/ /app/environments/
+# Copy files with proper ownership
+COPY --chown=$MAMBA_USER:$MAMBA_USER environments/ /app/environments/
 RUN mkdir -p /usr/local/bin
 
 # Install source packages via GitHub
@@ -42,6 +43,8 @@ RUN wget https://github.com/PacificBiosciences/trgt/releases/download/v4.0.0/trg
     && mv trgt-v4.0.0-x86_64-unknown-linux-gnu/trgt /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/ExpansionHunter /usr/local/bin/scattr /usr/local/bin/trgt
+
+USER $MAMBA_USER
 
 # straglr
 RUN micromamba create -f /app/environments/straglr.yml -y && \
