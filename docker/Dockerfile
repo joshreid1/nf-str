@@ -9,6 +9,16 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     git \
     wget \
+    bzip2-devel \
+    cmake \
+    gcc \
+    gcc-c++ \
+    git \
+    libcurl-devel \
+    libstdc++-static \
+    openssl-devel \
+    xz-devel \
+    zlib-devel \
     && rm -rf /var/lib/apt/lists/*
 
 
