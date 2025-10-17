@@ -1,0 +1,11 @@
+name: base
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - python>=3.8
+  - pysam
+  - numpy
+  - polars
+  - pip:
+    - git+https://github.com/bahlolab/EH5_kmerfilter.git

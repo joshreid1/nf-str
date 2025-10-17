@@ -46,6 +46,10 @@ RUN chmod +x /usr/local/bin/ExpansionHunter /usr/local/bin/scattr /usr/local/bin
 
 USER $MAMBA_USER
 
+# base dependencies for pipeline
+RUN micromamba create -f /app/environments/base.yml -y && \
+    micromamba clean --all --yes
+
 # straglr
 RUN micromamba create -f /app/environments/straglr.yml -y && \
     micromamba clean --all --yes
@@ -57,6 +61,6 @@ RUN micromamba create -f /app/environments/atarva.yml -y && \
 # longTR
 RUN micromamba create -n longTR -c bioconda -c conda-forge longtr
 
+
 ENV PATH="/usr/local/bin:${PATH}"
-
-
+ENV ENV_NAME=base
