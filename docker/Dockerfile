@@ -42,17 +42,7 @@ RUN wget https://github.com/PacificBiosciences/trgt/releases/download/v4.0.0/trg
     && rm trgt-v4.0.0-x86_64-unknown-linux-gnu.tar.gz \
     && mv trgt-v4.0.0-x86_64-unknown-linux-gnu/trgt /usr/local/bin/
 
-
-RUN git clone https://github.com/bahlolab/EH5_kmerfilter.git /opt/EH5_kmerfilter && \
-    cd /opt/EH5_kmerfilter && \
-    git checkout main && \
-    micromamba run -n eh5_kmerfilter -f environment.yml && \
-    micromamba clean --all --yes && \
-    chmod +x /opt/EH5_kmerfilter/kmer_filter.py && \
-    ln -s /opt/EH5_kmerfilter/kmer_filter.py /usr/local/bin/kmer_filter.py
-
 RUN chmod +x /usr/local/bin/ExpansionHunter /usr/local/bin/scattr /usr/local/bin/trgt
-
 
 
 USER $MAMBA_USER
