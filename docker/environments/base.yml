@@ -7,5 +7,4 @@ dependencies:
   - pysam
   - numpy
   - polars
-  - pip:
-    - git+https://github.com/bahlolab/EH5_kmerfilter.git
+  - plotnine
