@@ -9,16 +9,9 @@ process kmer_filter {
     tuple val(sam), path(out_vcf), path(out_vcf_tbi)
     
     script:
-    out_vcf = "${sam}_validated.vcf.gz"
-    out_vcf_tbi = "${sam}_validated.vcf.gz.tbi"
+    out_vcf = "${sam}_validated.vcf"
     """
-    python kmer_filter.py --bam ${bamlet_srt} \
-    --vcf ${vcf} \
-    --catalog ${catalog} \
-    --auto \
-    --keep_lowdepth \
-    -o ./${sam}
-
-    tabix -p vcf ${out_vcf}
+    micromamba run -n eh5_kmerfilter python kmer_filter.py --bam ${bamlet_srt} --vcf ${vcf} --catalog ${catalog} --auto --keep_lowdepth \
+-o ./${sam}
     """
 }

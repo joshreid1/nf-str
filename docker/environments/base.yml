@@ -4,6 +4,11 @@ channels:
   - conda-forge
 dependencies:
   - python>=3.8
+  - htslib
+  - bcftools
+  - samtools
+  - scipy
+  - scikit-learn
   - pysam
   - numpy
   - polars
