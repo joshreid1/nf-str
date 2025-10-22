@@ -1,10 +1,9 @@
 params.caller = 'ExpnansionHunter'
-params.catalog = ''
+params.catalog = '../catalogues/ExpansionHunter_hg38.json'
 
 include { call } from './ExpansionHunter/call.nf'
 include { kmer_filter } from './ExpansionHunter/kmer_filter.nf'
-include { vcf_to_tsv } from './ExpansionHunter/vcf_to_tsv.nf'
-include { concat_tsvs } from './common/concat_tsvs.nf'
+include { sort_bamlet } from './ExpansionHunter/sort_bamlet.nf'
 
 workflow run_expansion_hunter {
     take:
@@ -14,10 +13,8 @@ workflow run_expansion_hunter {
         eh5_results = sam_bam_ch |
             combine(ref) |
             call |
-            kmer_filter |
-            vcf_to_tsv |
-            combine(vcf_to_tsv.out_tsv) |
-            concat_tsvs(cohort: params.caller)
+            sort_bamlet |
+            kmer_filter 
     emit:
         eh5_results  
 }
