@@ -54,14 +54,17 @@ RUN git clone https://github.com/bahlolab/EH5_kmerfilter.git /opt/EH5_kmerfilter
 RUN chmod +x /usr/local/bin/ExpansionHunter /usr/local/bin/scattr /usr/local/bin/trgt
 
 
+
 USER $MAMBA_USER
 
-RUN git clone https://github.com/bahlolab/EH5_kmerfilter.git /opt/EH5_kmerfilter && \
-    cd /opt/EH5_kmerfilter && \
-    git checkout main && \
-    micromamba install -n eh5_kmerfilter -f environment.yml && \
+RUN wget https://github.com/bahlolab/EH5_kmerfilter/archive/refs/tags/v1.0.0.tar.gz  \
+    && tar -xvzf EH5_kmerfilter-1.0.0.tar.gz \
+    && rm EH5_kmerfilter-1.0.0.tar.gz \
+    && mv EH5_kmerfilter-1.0.0 /app/EH5_kmerfilter 
+
+RUN micromamba create -n eh5_kmerfilter -f /app/EH5_kmerfilter/environment.yml && \
     micromamba clean --all --yes && \
-    chmod +x /opt/EH5_kmerfilter/kmer_filter.py && \
+    chmod +x /app/EH5_kmerfilter/kmer_filter.py && \
     ln -s /opt/EH5_kmerfilter/kmer_filter.py /usr/local/bin/kmer_filter.py
 
 
