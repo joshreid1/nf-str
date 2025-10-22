@@ -59,7 +59,7 @@ USER $MAMBA_USER
 RUN git clone https://github.com/bahlolab/EH5_kmerfilter.git /opt/EH5_kmerfilter && \
     cd /opt/EH5_kmerfilter && \
     git checkout main && \
-    micromamba run -n eh5_kmerfilter -f environment.yml && \
+    micromamba install -n eh5_kmerfilter -f environment.yml && \
     micromamba clean --all --yes && \
     chmod +x /opt/EH5_kmerfilter/kmer_filter.py && \
     ln -s /opt/EH5_kmerfilter/kmer_filter.py /usr/local/bin/kmer_filter.py
