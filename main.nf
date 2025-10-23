@@ -25,13 +25,11 @@ workflow {
         Channel.from(bams) |
         map { [it.iid, path(it.bam), path(it.bam + '.bai')] }
     
-    i
-
     if (params.callers.contains('ExpansionHunter5')) {
         run_expansion_hunter(ref, sam_bam_ch)
     }
 
-    if (params.callers.contains('scattr') {
+    if (params.callers.contains('scattr')) {
         run_scattr(ref, sam_bam_ch)
     }
 
