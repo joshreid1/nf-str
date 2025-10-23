@@ -45,8 +45,8 @@ RUN wget https://github.com/PacificBiosciences/trgt/releases/download/v4.0.0/trg
 RUN chmod +x /usr/local/bin/ExpansionHunter /usr/local/bin/scattr /usr/local/bin/trgt
 
 RUN wget https://github.com/bahlolab/EH5_kmerfilter/archive/refs/tags/v1.0.0.tar.gz  \
-    && tar -xvzf EH5_kmerfilter-1.0.0.tar.gz \
-    && rm EH5_kmerfilter-1.0.0.tar.gz \
+    && tar -xvzf v1.0.0.tar.gz \
+    && rm v1.0.0.tar.gz \
     && mv EH5_kmerfilter-1.0.0 /app/EH5_kmerfilter 
 
 USER $MAMBA_USER
