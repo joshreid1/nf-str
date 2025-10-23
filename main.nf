@@ -26,11 +26,11 @@ workflow {
         map { [it.iid, path(it.bam), path(it.bam + '.bai')] }
     
     if (params.callers.contains('ExpansionHunter5')) {
-        run_expansion_hunter(ref, sam_bam_ch)
+        run_expansion_hunter(ref_ch, sam_bam_ch)
     }
 
     if (params.callers.contains('scattr')) {
-        run_scattr(ref, sam_bam_ch)
+        run_scattr(ref_ch, sam_bam_ch)
     }
 
 }
