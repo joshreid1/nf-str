@@ -47,16 +47,14 @@ RUN chmod +x /usr/local/bin/ExpansionHunter /usr/local/bin/scattr /usr/local/bin
 RUN wget https://github.com/bahlolab/EH5_kmerfilter/archive/refs/tags/v1.0.0.tar.gz  \
     && tar -xvzf v1.0.0.tar.gz \
     && rm v1.0.0.tar.gz \
-    && mv EH5_kmerfilter-1.0.0 /app/EH5_kmerfilter 
+    && mv EH5_kmerfilter-1.0.0 /app/EH5_kmerfilter \
+    && chmod +x /app/EH5_kmerfilter/kmer_filter.py \
+    && ln -s /app/EH5_kmerfilter/kmer_filter.py /usr/local/bin/kmer_filter.py
 
 USER $MAMBA_USER
 
-
 RUN micromamba create -n eh5_kmerfilter -f /app/EH5_kmerfilter/environment.yml && \
-    micromamba clean --all --yes && \
-    chmod +x /app/EH5_kmerfilter/kmer_filter.py && \
-    ln -s /opt/EH5_kmerfilter/kmer_filter.py /usr/local/bin/kmer_filter.py
-
+    micromamba clean --all --yes 
 
 # base dependencies for pipeline
 RUN micromamba create -f /app/environments/base.yml -y && \
