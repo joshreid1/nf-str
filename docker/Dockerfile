@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     libgomp1 \
     libgcc-s1 \
     libstdc++6 \
+    procps \
     && rm -rf /var/lib/apt/lists/*
 
 
