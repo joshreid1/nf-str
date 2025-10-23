@@ -1,4 +1,4 @@
-params.catalog = 'default'  // path to ExpansionHunter catalog, use 'default' for the default catalog
+params.catalog = "${projectDir}/catalogues/ExpansionHunter_hg38.json"  // path to ExpansionHunter catalog, use 'default' for the default catalog
 
 process call {
     cpus 1

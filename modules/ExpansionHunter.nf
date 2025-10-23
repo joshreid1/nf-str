@@ -1,5 +1,4 @@
 params.caller = 'ExpnansionHunter'
-params.catalog = '../catalogues/ExpansionHunter_hg38.json'
 
 include { call } from './ExpansionHunter/call.nf'
 include { kmer_filter } from './ExpansionHunter/kmer_filter.nf'

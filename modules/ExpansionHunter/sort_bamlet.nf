@@ -12,7 +12,7 @@ process sort_bamlet {
     
     script:
     """
-    samtools sort -o ${sam}_sorted_relaigned.bam ${bamlet}
-    tabix ${sam}_sorted_relaigned.bam
+    micromamba run -n base samtools sort -o ${sam}_sorted_relaigned.bam ${bamlet}
+    micromamba run -n base tabix -p bam ${sam}_sorted_relaigned.bam
     """
 }

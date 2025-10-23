@@ -1,3 +1,4 @@
+params.catalog = "${projectDir}/catalogues/ExpansionHunter_hg38.json"  
 process kmer_filter {
     
     publishDir "progress/eh5/kmer_filter/", mode: "symlink"
@@ -10,8 +11,10 @@ process kmer_filter {
     
     script:
     out_vcf = "${sam}_validated.vcf"
+    out_vcf_tbi = "${sam}_validated.vcf.tbi"
     """
     micromamba run -n eh5_kmerfilter python kmer_filter.py --bam ${bamlet_srt} --vcf ${vcf} --catalog ${catalog} --auto --keep_lowdepth \
 -o ./${sam}
+    micromamba run -n base tabix -p vcf ${out_vcf}
     """
 }
