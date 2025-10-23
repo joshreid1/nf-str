@@ -11,7 +11,7 @@ process call {
         tuple val(sam), path(bam), path(bai), path(ref_fa), path(ref_fa_fai) 
 
     output:
-        tuple val(sam), path("${sam}_relaigned.bam"), path("${sam}.json"), path("${sam}.vcf")
+        tuple val(sam), path("${sam}_realigned.bam"), path("${sam}.json"), path("${sam}.vcf")
 
     script:
     """
