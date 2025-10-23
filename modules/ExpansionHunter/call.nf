@@ -17,7 +17,7 @@ process call {
     """
         ExpansionHunter \
 		--reads ${bam} \
-		--reference ${ref} \
+		--reference ${ref_fa} \
 		--variant-catalog ${params.catalog} \
 		--output-prefix ${sam}
     """
