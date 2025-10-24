@@ -52,11 +52,13 @@ RUN wget https://github.com/bahlolab/EH5_kmerfilter/archive/refs/tags/v1.0.0.tar
     && chmod +x /app/EH5_kmerfilter/kmer_filter.py \
     && ln -s /app/EH5_kmerfilter/kmer_filter.py /usr/local/bin/kmer_filter.py
 
+
 USER $MAMBA_USER
 
 # base dependencies for pipeline
 RUN micromamba create -f /app/environments/base.yml -y && \
     micromamba clean --all --yes
+
 
 RUN micromamba create -n eh5_kmerfilter -f /app/EH5_kmerfilter/environment.yml && \
     micromamba clean --all --yes 
@@ -74,5 +76,5 @@ RUN micromamba create -n longTR -c bioconda -c conda-forge longtr
 
 
 ENV PATH="/usr/local/bin:/opt/conda/envs/base/bin:/opt/conda/envs/eh5_kmerfilter/bin/opt/conda/envs/atarva/bin/opt/conda/envs/straglr/bin/opt/conda/envs/longTR/bin${PATH}"
-ENV ENV_NAME=base
+ENV ENV_NAME=nf-str
 
