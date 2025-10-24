@@ -75,6 +75,6 @@ RUN micromamba create -f /app/environments/atarva.yml -y && \
 RUN micromamba create -n longTR -c bioconda -c conda-forge longtr
 
 
-ENV PATH="/usr/local/bin:/opt/conda/envs/base/bin:/opt/conda/envs/eh5_kmerfilter/bin/opt/conda/envs/atarva/bin/opt/conda/envs/straglr/bin/opt/conda/envs/longTR/bin${PATH}"
+ENV PATH="/usr/local/bin:/opt/conda/envs/nf-str/bin:/opt/conda/envs/eh5_kmerfilter/bin/opt/conda/envs/atarva/bin/opt/conda/envs/straglr/bin/opt/conda/envs/longTR/bin${PATH}"
 ENV ENV_NAME=nf-str
 
