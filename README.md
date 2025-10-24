@@ -11,36 +11,31 @@ Nextflow cohort level STR calling pipeline for short read and long read sequenci
   ```Nextflow
     params {
       // inputs
-      id = 'sv-run'
+      id = 'str-run'
       bams = 'bams.tsv'
       
       // run config
-      callers = ['MANTA', 'SMOOVE', 'CNVNATOR']
+      callers = ['ExpansionHunter']  // currently only ExpansionHunter is supported
       assembly = 'hg38'
       ref_fasta = '/stornext/Bioinf/data/lab_bahlo/ref_db/human/hg38/GATK/fasta_no_alt/hg38.no_alt.fasta'
     }
     ```
 * **Params**  
   * `id` - Unique name for run. Used to name output files.
-  * `bams` - Path to TSV file with first column containing individual ID, second column containing path to indexed BAM file (no header row/  column names).
-  * `callers` - List of SV callers to use. Currently supported values are "MANTA": [Manta](https://github.com/Illumina/manta), "CNVNATOR": [CNVnator](https://github.com/abyzovlab/CNVnator) and "SMOOVE": [Smoove](https://github.com/brentp/smoove) (lumpy).
+  * `bams` - Path to TSV file with first column containing individual ID, second column containing path to BAM file. No headers or row names. To do: add support for CRAM files.
+  * `callers` - List of STR callers
 * First run:  
-`nextflow run /PATH/TO/nf-sv-pipe`
+`nextflow run /PATH/TO/nf-str`
 * Resume run:  
-`nextflow run /PATH/TO/nf-sv-pipe -resume`
+`nextflow run /PATH/TO/nf-str -resume`
 * Note: It is Recommended to run workflow in a `screen` session
 
 ## Output
 * Outputs are created in the folder `output` in the run directory
+
+#### Not implemented yet
 * For each caller, a merged VCF file named `<id>.<caller>.vcf.gz` is output
 * A combined VCF file including calls from all callers named `<id>.combined.vcf.gz` is also output
 
 ## Implementation
 * Calling is implemented as recommended for individual callers
-* Additional filtering for spilt-read/read-pair callers using [duphold](https://github.com/brentp/duphold) (Manta and Smoove only).
-* Cohort merging using [Jasmine](https://github.com/mkirsche/Jasmine) (CNVnator and Manta only)
-  * Breakend (SVTYPE=BND) calls are excluded at this point as they aren't handled well by Jasmine
-
-## To-do
-* Merging calls across different callers
-* Implement additional callers (e.g. [GRIDDS](https://github.com/PapenfussLab/gridss))
