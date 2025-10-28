@@ -8,7 +8,7 @@ process call {
     tag { sam }
 
     input:
-        tuple val(sam), path(bam), path(bai), path(ref_fa), path(ref_fa_fai) 
+        tuple val(sam), path(bam), path(bai)
 
     output:
         tuple val(sam), path("${sam}_realigned.bam"), path("${sam}.json"), path("${sam}.vcf")
@@ -17,7 +17,7 @@ process call {
     """
         ExpansionHunter \
 		--reads ${bam} \
-		--reference ${ref_fa} \
+		--reference ${params.ref_fasta} \
 		--variant-catalog ${params.catalog} \
 		--output-prefix ${sam}
     """
