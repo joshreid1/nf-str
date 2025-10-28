@@ -4,7 +4,7 @@
 Nextflow cohort level STR calling pipeline for short read and long read sequencing. This pipeline is a work in progress.
 
 ## Usage
-* Clone this repositoty
+* Clone this repository
 * Create and navigate to run directory
 * See [bahlolab/nextflow-config](https://github.com/bahlolab/nextflow-config) for generic Nextflow configuration for Milton/SLURM.
 * Create configuration file in run directory named `nextflow.config`, e.g.:
@@ -12,17 +12,15 @@ Nextflow cohort level STR calling pipeline for short read and long read sequenci
     params {
       // inputs
       id = 'str-run'
-      bams = 'bams.tsv'
+      manifest = 'bams.tsv'
       
       // run config
-      callers = ['ExpansionHunter']  // currently only ExpansionHunter is supported
-      assembly = 'hg38'
       ref_fasta = '/stornext/Bioinf/data/lab_bahlo/ref_db/human/hg38/GATK/fasta_no_alt/hg38.no_alt.fasta'
     }
     ```
 * **Params**  
   * `id` - Unique name for run. Used to name output files.
-  * `bams` - Path to TSV file with first column containing individual ID, second column containing path to BAM file. No headers or row names. To do: add support for CRAM files.
+  * `manifest` - Path to TSV file with first column containing sample ID, second column containing sequencing type (i.e. illumina, ont or pacbio), and third column containing path to BAM/CRAM file. No headers or row names. 
   * `callers` - List of STR callers
 * First run:  
 `nextflow run /PATH/TO/nf-str`

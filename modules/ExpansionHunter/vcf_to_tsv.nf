@@ -1,6 +1,7 @@
 process vcf_to_tsv {
     
     publishDir "progress/eh5/tsvs/", mode: "symlink"
+    tag { sam }
 
     input:
     tuple val(sam), path(vcf)
