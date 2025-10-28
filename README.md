@@ -15,8 +15,6 @@ Nextflow cohort level STR calling pipeline for short read and long read sequenci
       manifest = 'bams.tsv'
       
       // run config
-      callers = ['ExpansionHunter']  // currently only ExpansionHunter is supported
-      assembly = 'hg38'
       ref_fasta = '/stornext/Bioinf/data/lab_bahlo/ref_db/human/hg38/GATK/fasta_no_alt/hg38.no_alt.fasta'
     }
     ```

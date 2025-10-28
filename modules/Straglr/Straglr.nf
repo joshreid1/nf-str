@@ -1,5 +1,5 @@
 params.caller = 'Straglr'
-params.straglr_loci = "${projectDir}/catalogues/Straglr_hg38.bed"  
+params.straglr_loci = "${projectDir}/catalogues/STRchive-disease-loci.hg38.straglr.bed"  
 
 workflow run_straglr {
     take:
