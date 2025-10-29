@@ -70,10 +70,6 @@ jobs:
             micromamba run -n longTR LongTR --version
           echo "Testing PATH bindings for conda packages..."
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            ./straglr.py --version
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
             atarva --version
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            LongTR --version
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
             python kmer_filter.py --version

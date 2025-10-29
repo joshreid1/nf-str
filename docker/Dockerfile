@@ -59,22 +59,15 @@ USER $MAMBA_USER
 RUN micromamba create -f /app/environments/base.yml -y && \
     micromamba clean --all --yes
 
-
+# EH5 kmerfilter
 RUN micromamba create -n eh5_kmerfilter -f /app/EH5_kmerfilter/environment.yml && \
     micromamba clean --all --yes 
-
-# straglr
-RUN micromamba create -f /app/environments/straglr.yml -y && \
-    micromamba clean --all --yes
 
 # ATaRVa
 RUN micromamba create -f /app/environments/atarva.yml -y && \
     micromamba clean --all --yes
 
-# longTR
-RUN micromamba create -n longTR -c bioconda -c conda-forge longtr
 
-
-ENV PATH="/usr/local/bin:/opt/conda/envs/nf-str/bin:/opt/conda/envs/eh5_kmerfilter/bin:/opt/conda/envs/atarva/bin:/opt/conda/envs/straglr/bin:/opt/conda/envs/longTR/bin:${PATH}"
+ENV PATH="/usr/local/bin:/opt/conda/envs/nf-str/bin:/opt/conda/envs/eh5_kmerfilter/bin:/opt/conda/envs/atarva/bin:${PATH}"
 ENV ENV_NAME=nf-str
 
