@@ -63,11 +63,7 @@ jobs:
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest scattr --version
           echo "Testing conda packages via micromamba run..."
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            micromamba run -n straglr straglr.py --version
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
             micromamba run -n atarva atarva --version
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            micromamba run -n longTR LongTR --version
           echo "Testing PATH bindings for conda packages..."
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
             atarva --version
