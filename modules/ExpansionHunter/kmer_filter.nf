@@ -5,6 +5,7 @@ process kmer_filter {
     publishDir "progress/eh5/kmer_filter/", mode: "symlink"
     tag { sam }
 
+
     input:
     tuple val(sam), path(bamlet_srt), path(bamlet_bai), path(vcf)
 
@@ -15,8 +16,8 @@ process kmer_filter {
     out_vcf = "${sam}_validated.vcf"
     out_vcf_tbi = "${sam}_validated.vcf.tbi"
     """
-    micromamba run -n eh5_kmerfilter python kmer_filter.py --bam ${bamlet_srt} --vcf ${vcf} --catalog ${params.catalog} --auto --keep_lowdepth \
+    python kmer_filter.py --bam ${bamlet_srt} --vcf ${vcf} --catalog ${params.catalog} --auto --keep_lowdepth \
 -o ./${sam}
-    micromamba run -n base tabix -p vcf ${out_vcf}
+    tabix -p vcf ${out_vcf}
     """
 }
