@@ -68,4 +68,4 @@ jobs:
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
             atarva --version
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            python EH5_kmerfilter/kmer_filter.py --version
+            python EH5_kmerfilter/kmer_filter.py -h
