@@ -15,13 +15,15 @@ process longtr {
     cpus 1
 	memory {'2 GB'}
 	time '5 h'
-    publishDir "progress/longtr/", mode: "symlink"
-    tag { sam }
+    publishDir "progress/longtr/", mode: "symlink", saveAs: { filename ->  filename.replaceAll("${sam}\\.", "${sam}_${type}.")}
+
+
+    tag "${sam}_${type}"
 
     container 'quay.io/biocontainers/longtr:1.2--h077b44d_1'
 
     input:
-        tuple val(sam), path(bam), path(bai)
+        tuple val(sam), val(type), path(bam), path(bai)
 
     output:
         tuple val(sam), path("${sam}.vcf.gz")

@@ -8,7 +8,7 @@ process call {
     tag { sam }
 
     input:
-        tuple val(sam), path(bam), path(bai)
+        tuple val(sam), val(type), path(bam), path(bai)
 
     output:
         tuple val(sam), path("${sam}_realigned.bam"), path("${sam}.json"), path("${sam}.vcf")

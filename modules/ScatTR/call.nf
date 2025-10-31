@@ -8,7 +8,7 @@ process call {
     tag { sam }
 
     input:
-        tuple val(sam), path(bam), path(bai), path(ref_fa), path(ref_fa_fai) 
+        tuple val(sam), val(type), path(bam), path(bai)
 
     output:
         tuple val(sam), 
@@ -28,7 +28,7 @@ process call {
     scattr  extract -@ 8 ${bam} 
 
     # Step 3: define
-    scattr ${sam} define ${params.catalog} ${ref_fa}
+    scattr ${sam} define ${params.catalog} ${params.ref_fasta}
 
     # Step 4: genotype
     scattr ${sam} genotype

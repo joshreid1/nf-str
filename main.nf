@@ -11,7 +11,7 @@ include { path; read_tsv; date_ymd } from './modules/functions'
 include { run_expansion_hunter } from './modules/ExpansionHunter/ExpansionHunter.nf'
 
 //Scatter
-include { run_scattr } from './modules/scattr.nf'
+include { run_scattr } from './modules/ScatTR/ScatTR.nf'
 
 //Straglr
 include { run_straglr as run_straglr_ont } from './modules/Straglr/Straglr.nf'
@@ -44,11 +44,11 @@ workflow {
         }
         .branch { sample, type, bam, index ->
             illumina: type == 'illumina'
-                return [sample, bam, index]
+                return [sample, type, bam, index]
             ont: type == 'ont'
-                return [sample, bam, index]
+                return [sample, type, bam, index]
             pacbio: type == 'pacbio'
-                return [sample, bam, index]
+                return [sample, type, bam, index]
         }
         .set { samples }
     
@@ -59,6 +59,8 @@ workflow {
     
     // Combine all results
     //all_results = illumina_results.mix(ont_results, pacbio_results)
+
+    pacbio_results.straglr_results.view()
 }
 
 workflow run_illumina {
@@ -66,9 +68,11 @@ workflow run_illumina {
         sample_ch
     main:
         eh_results = sample_ch  | run_expansion_hunter
+        scattr_results = sample_ch | run_scattr
             
     emit:
         eh_results
+        scattr_results
 }
 
 workflow run_ont {

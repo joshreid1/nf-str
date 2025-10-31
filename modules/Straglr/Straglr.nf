@@ -15,14 +15,16 @@ process straglr {
     cpus 1
 	memory {'2 GB'}
 	time '5 h'
-    publishDir "progress/straglr/", mode: "symlink"
-    tag { sam }
+    
+    publishDir "progress/straglr/", mode: "symlink", saveAs: { filename -> filename.replaceAll("${sam}\\.", "${sam}_${type}.") }
+    
+    tag "${sam}_${type}"
 
     //container '/vast/scratch/users/reid.j/nf-str-run/straglr_1.5.5--pyhdfd78af_0.sif'
     container 'quay.io/biocontainers/straglr:1.5.5--pyhdfd78af_0'
 
     input:
-        tuple val(sam), path(bam), path(bai)
+        tuple val(sam), val(type), path(bam), path(bai)
 
     output:
         tuple val(sam), path("${sam}.tsv"), path("${sam}.bed"), path("${sam}.vcf")
