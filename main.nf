@@ -21,6 +21,13 @@ include { run_straglr as run_straglr_pacbio } from './modules/Straglr/Straglr.nf
 include { run_longtr as run_longtr_ont } from './modules/LongTR/LongTR.nf'
 include { run_longtr as run_longtr_pacbio } from './modules/LongTR/LongTR.nf'
 
+// atarva
+include { run_atarva as run_atarva_ont } from './modules/atarva/atarva.nf'
+include { run_atarva as run_atarva_pacbio  } from './modules/atarva/atarva.nf'
+
+// TRGT
+include { run_trgt } from './modules/TRGT/TRGT.nf'
+
 manifest = read_tsv(path(params.manifest), ['sample', 'type', 'bam'])
 
 workflow {
@@ -81,10 +88,12 @@ workflow run_ont {
     main:
         straglr_results = sample_ch | run_straglr_ont
         longtr_results = sample_ch | run_longtr_ont
+        atarva_results = sample_ch | run_atarva_ont
         
     emit:
         straglr_results
         longtr_results
+        atarva_results
 }
 
 workflow run_pacbio {
@@ -93,8 +102,11 @@ workflow run_pacbio {
     main:
         straglr_results = sample_ch | run_straglr_pacbio
         longtr_results = sample_ch | run_longtr_pacbio
+        atarva_results = sample_ch | run_atarva
+        trgt_results = sample_ch | run_trgt
         
     emit:
         straglr_results
         longtr_results
+        atarva_results
 }
