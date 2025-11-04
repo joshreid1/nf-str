@@ -15,7 +15,7 @@ process longtr {
     cpus 1
 	memory {'2 GB'}
 	time '5 h'
-    publishDir "progress/longtr/", mode: "symlink", saveAs: { filename ->  filename.replaceAll("${sam}\\.", "${sam}_${type}.")}
+    publishDir "output/longtr/", mode: "copy", saveAs: { filename ->  filename.replaceAll("${sam}\\.", "${sam}_${type}.")}
 
 
     tag "${sam}_${type}"

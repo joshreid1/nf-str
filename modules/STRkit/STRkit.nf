@@ -15,8 +15,8 @@ process strkit {
     cpus 1
 	memory {'2 GB'}
 	time '5 h'
-    publishDir "progress/strkit/", mode: "symlink"
-    
+    publishDir "output/strkit/", mode: "copy"
+
     tag "${sam}_${type}"
 
     container 'ghcr.io/davidlougheed/strkit:latest'

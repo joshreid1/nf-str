@@ -2,7 +2,7 @@ params.catalog = "${projectDir}/catalogues/ExpansionHunter_hg38.json"
 
 process kmer_filter {
     
-    publishDir "progress/eh5/kmer_filter/", mode: "symlink"
+    publishDir "output/eh5/kmer_filter/", mode: "copy"
     tag { sam }
 
 

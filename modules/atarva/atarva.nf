@@ -1,21 +1,21 @@
 params.caller = 'atarva'
-params.atarva_loci = "${projectDir}/catalogues/STRchive-disease-loci.hg38.atarva.bed"  
+params.atarva_loci = "${projectDir}/catalogues/STRchive-disease-loci.hg38.atarva.sorted.bed.gz"  
 
 workflow run_atarva {
     take:
         sam_bam_ch
     main:
-        trgt_results = sam_bam_ch |
-            trgt
+        atarva_results = sam_bam_ch |
+            atarva
     emit:
-        trgt_results  
+        atarva_results  
 }
 
 process atarva {
     cpus 1
 	memory {'2 GB'}
 	time '5 h'
-    publishDir "progress/atarva/", mode: "symlink", saveAs: { filename ->  filename.replaceAll("${sam}\\.", "${sam}_${type}.")}
+    publishDir "output/atarva/", mode: "copy", saveAs: { filename ->  filename.replaceAll("${sam}\\.", "${sam}_${type}.")}
 
 
     tag "${sam}_${type}"

@@ -23,8 +23,7 @@ include { run_longtr } from './modules/LongTR/LongTR.nf'
 include { run_strkit } from './modules/STRkit/STRkit.nf'
 
 // atarva
-include { run_atarva as run_atarva_ont } from './modules/atarva/atarva.nf'
-include { run_atarva as run_atarva_pacbio  } from './modules/atarva/atarva.nf'
+include { run_atarva as run_atarva } from './modules/atarva/atarva.nf'
 
 // TRGT
 include { run_trgt } from './modules/TRGT/TRGT.nf'
@@ -74,58 +73,42 @@ workflow run_illumina {
         sample_ch
     main:
         eh_results = sample_ch  | run_expansion_hunter
-        scattr_results = sample_ch | run_scattr
+        //scattr_results = sample_ch | run_scattr
             
     emit:
         eh_results
-        scattr_results
+        //scattr_results
 }
 
 workflow run_ont {
     take:
         sample_ch
     main:
-<<<<<<< Updated upstream
-        straglr_results = sample_ch | run_straglr_ont
-        longtr_results = sample_ch | run_longtr_ont
-        atarva_results = sample_ch | run_atarva_ont
-=======
+        atarva_results = sample_ch | run_atarva
         straglr_results = sample_ch | run_straglr
         longtr_results = sample_ch | run_longtr
         strkit_results = sample_ch | run_strkit
->>>>>>> Stashed changes
         
     emit:
         straglr_results
         longtr_results
-<<<<<<< Updated upstream
         atarva_results
-=======
         strkit_results
->>>>>>> Stashed changes
 }
 
 workflow run_pacbio {
     take:
         sample_ch
     main:
-<<<<<<< Updated upstream
-        straglr_results = sample_ch | run_straglr_pacbio
-        longtr_results = sample_ch | run_longtr_pacbio
         atarva_results = sample_ch | run_atarva
         trgt_results = sample_ch | run_trgt
-=======
         straglr_results = sample_ch | run_straglr
         longtr_results = sample_ch | run_longtr
         strkit_results = sample_ch | run_strkit
->>>>>>> Stashed changes
         
     emit:
         straglr_results
         longtr_results
-<<<<<<< Updated upstream
         atarva_results
-=======
         strkit_results
->>>>>>> Stashed changes
 }

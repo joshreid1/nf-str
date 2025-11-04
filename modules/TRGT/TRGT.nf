@@ -15,7 +15,7 @@ process trgt {
     cpus 1
 	memory {'2 GB'}
 	time '5 h'
-    publishDir "progress/trgt/", mode: "symlink", saveAs: { filename ->  filename.replaceAll("${sam}\\.", "${sam}_${type}.")}
+    publishDir "output/trgt/", mode: "copy", saveAs: { filename ->  filename.replaceAll("${sam}\\.", "${sam}_${type}.")}
 
 
     tag "${sam}_${type}"

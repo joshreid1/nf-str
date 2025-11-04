@@ -16,7 +16,7 @@ process straglr {
 	memory {'2 GB'}
 	time '5 h'
     
-    publishDir "progress/straglr/", mode: "symlink", saveAs: { filename -> filename.replaceAll("${sam}\\.", "${sam}_${type}.") }
+    publishDir "output/straglr/", mode: "copy", saveAs: { filename -> filename.replaceAll("${sam}\\.", "${sam}_${type}.") }
     
     tag "${sam}_${type}"
 

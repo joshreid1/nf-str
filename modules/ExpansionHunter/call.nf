@@ -4,7 +4,7 @@ process call {
     cpus 1
 	memory {'2 GB'}
 	time '5 h'
-    publishDir "progress/eh5/", mode: "symlink"
+    publishDir "output/eh5/", mode: "copy"
     tag { sam }
 
     input:

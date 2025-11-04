@@ -4,7 +4,7 @@ process call {
     cpus 8
 	memory {'8 GB'}
 	time '10 h'
-    publishDir "progress/scattr/", mode: "symlink"
+    publishDir "output/scattr/", mode: "copy"
     tag { sam }
 
     input:

@@ -1,6 +1,6 @@
 process vcf_to_tsv {
     
-    publishDir "progress/eh5/tsvs/", mode: "symlink"
+    publishDir "output/eh5/tsvs/", mode: "copy"
     tag { sam }
 
     input:
