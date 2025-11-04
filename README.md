@@ -1,9 +1,10 @@
-# WIP: Nextflow pipeline for analysis of short tandem repeats (STRs)
-# nf-sv-pipe
+# nf-str: Nextflow pipeline for analysis of short tandem repeats (STRs)
+
 
 Nextflow cohort level STR calling pipeline for short read and long read sequencing. This pipeline is a work in progress.
 
-## Usage
+## Usage (WEHI HPC)
+
 * Clone this repository
 * Create and navigate to run directory
 * See [bahlolab/nextflow-config](https://github.com/bahlolab/nextflow-config) for generic Nextflow configuration for Milton/SLURM.
@@ -21,7 +22,7 @@ Nextflow cohort level STR calling pipeline for short read and long read sequenci
 * **Params**  
   * `id` - Unique name for run. Used to name output files.
   * `manifest` - Path to TSV file with first column containing sample ID, second column containing sequencing type (i.e. illumina, ont or pacbio), and third column containing path to BAM/CRAM file. No headers or row names. 
-  * `callers` - List of STR callers
+  * `callers` - List of STR callers, default is all of them for the releveant sequencing type.
 * First run:  
 `nextflow run /PATH/TO/nf-str`
 * Resume run:  
@@ -31,9 +32,12 @@ Nextflow cohort level STR calling pipeline for short read and long read sequenci
 ## Output
 * Outputs are created in the folder `output` in the run directory
 
-#### Not implemented yet
-* For each caller, a merged VCF file named `<id>.<caller>.vcf.gz` is output
-* A combined VCF file including calls from all callers named `<id>.combined.vcf.gz` is also output
-
 ## Implementation
-* Calling is implemented as recommended for individual callers
+* Calling is implemented as recommended for individual callers using default parameters.
+
+#### Not implemented yet
+
+* For each caller + technology, a directory of standardised parquet files named `<id>.<caller>.<tech>.parquet` is output
+* Visualisations
+* Allow user to specify parameters for individual callers
+
