@@ -68,6 +68,23 @@ workflow {
     //all_results = illumina_results.mix(ont_results, pacbio_results)
 }
 
+workflow.onComplete {
+
+    println ( workflow.success ? """
+        Pipeline execution summary
+        ---------------------------
+        Completed at: ${workflow.complete}
+        Duration    : ${workflow.duration}
+        Success     : ${workflow.success}
+        workDir     : ${workflow.workDir}
+        exit status : ${workflow.exitStatus}
+        """ : """
+        Failed: ${workflow.errorReport}
+        exit status : ${workflow.exitStatus}
+        """
+    )
+}
+
 workflow run_illumina {
     take:
         sample_ch
