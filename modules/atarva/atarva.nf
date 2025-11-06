@@ -17,6 +17,7 @@ process atarva {
 	time '5 h'
     publishDir "output/atarva/", mode: "copy", saveAs: { filename ->  filename.replaceAll("${sam}\\.", "${sam}_${type}.")}
 
+    containerOptions = '--cleanenv'
 
     tag "${sam}_${type}"
 
@@ -28,7 +29,7 @@ process atarva {
 
     script:
     """
-    micromamba run -n atarva atarva --fasta ${params.ref_fasta} \
+    atarva --fasta ${params.ref_fasta} \
            --bam ${bam} \
            --regions ${params.atarva_loci} \
            --vcf ${sam}.vcf
