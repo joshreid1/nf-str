@@ -1,4 +1,5 @@
-name: Build and Push Docker Image
+# .github/workflows/build_docker.yml
+name: Build and Push Docker Images
 
 on:
   push:
@@ -32,8 +33,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Extract metadata
-        id: meta
+      # Build main pipeline image
+      - name: Extract metadata (main)
+        id: meta-main
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -45,27 +47,55 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
       
-      - name: Build and push
+      - name: Build and push (main)
         uses: docker/build-push-action@v5
         with:
           context: docker/
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-main.outputs.tags }}
+          labels: ${{ steps.meta-main.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
-      - name: Test image
+      # Build ATaRVa image
+      - name: Clone ATaRVa repository
+        run: |
+          git clone https://github.com/SowpatiLab/ATaRVa.git
+      
+      - name: Extract metadata (ATaRVa)
+        id: meta-atarva
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/atarva
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+      
+      - name: Build and push (ATaRVa)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./ATaRVa
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta-atarva.outputs.tags }}
+          labels: ${{ steps.meta-atarva.outputs.labels }}
+          cache-from: type=gha,scope=atarva
+          cache-to: type=gha,mode=max,scope=atarva
+          build-args: |
+            BUILDKIT_CONTEXT_KEEP_GIT_DIR=1
+      
+      # Test images
+      - name: Test main image
         if: github.event_name != 'pull_request'
         run: |
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ExpansionHunter --version
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest trgt --version
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest scattr --version
-          echo "Testing conda packages via micromamba run..."
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            micromamba run -n atarva atarva --version
-          echo "Testing PATH bindings for conda packages..."
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            atarva --version
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
             python EH5_kmerfilter/kmer_filter.py -h
+      
+      - name: Test ATaRVa image
+        if: github.event_name != 'pull_request'
+        run: |
+          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/atarva:latest atarva --version

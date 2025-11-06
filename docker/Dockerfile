@@ -62,11 +62,7 @@ RUN micromamba create -f /app/environments/base.yml -y && \
 RUN micromamba create -n eh5_kmerfilter -f /app/EH5_kmerfilter/environment.yml && \
     micromamba clean --all --yes 
 
-# ATaRVa
-RUN micromamba create -f /app/environments/atarva.yml -y && \
-    micromamba clean --all --yes
 
-
-ENV PATH="/usr/local/bin:/opt/conda/envs/nf-str/bin:/opt/conda/envs/eh5_kmerfilter/bin:/opt/conda/envs/atarva/bin:${PATH}"
+ENV PATH="/usr/local/bin:/opt/conda/envs/nf-str/bin:/opt/conda/envs/eh5_kmerfilter/bin:${PATH}"
 ENV ENV_NAME=nf-str
 
