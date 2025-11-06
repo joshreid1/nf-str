@@ -24,10 +24,10 @@ Nextflow cohort level STR calling pipeline for short read and long read sequenci
   * `manifest` - Path to TSV file with first column containing sample ID, second column containing sequencing type (i.e. illumina, ont or pacbio), and third column containing path to BAM/CRAM file. No headers or row names. 
   * `callers` - List of STR callers, default is all of them for the releveant sequencing type.
 * First run:  
-`nextflow run /PATH/TO/nf-str`
+`nextflow run /PATH/TO/nf-str -profile singularity`
 * Resume run:  
 `nextflow run /PATH/TO/nf-str -resume`
-* Note: It is Recommended to run workflow in a `screen` session
+
 
 ## Output
 * Outputs are created in the folder `output` in the run directory
