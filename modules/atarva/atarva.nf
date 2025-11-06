@@ -28,7 +28,7 @@ process atarva {
 
     script:
     """
-    atarva --fasta ${params.ref_fasta} \
+    micromamba run -n atarva atarva --fasta ${params.ref_fasta} \
            --bam ${bam} \
            --regions ${params.atarva_loci} \
            --vcf ${sam}.vcf
