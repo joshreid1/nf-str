@@ -57,34 +57,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
-      # Build ATaRVa image
-      - name: Clone ATaRVa repository
-        run: |
-          git clone https://github.com/SowpatiLab/ATaRVa.git
-      
-      - name: Extract metadata (ATaRVa)
-        id: meta-atarva
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/atarva
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-      
-      - name: Build and push (ATaRVa)
-        uses: docker/build-push-action@v5
-        with:
-          context: ./ATaRVa
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta-atarva.outputs.tags }}
-          labels: ${{ steps.meta-atarva.outputs.labels }}
-          cache-from: type=gha,scope=atarva
-          cache-to: type=gha,mode=max,scope=atarva
-          build-args: |
-            BUILDKIT_CONTEXT_KEEP_GIT_DIR=1
-      
       # Test images
       - name: Test main image
         if: github.event_name != 'pull_request'
@@ -94,8 +66,5 @@ jobs:
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest scattr --version
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
             python EH5_kmerfilter/kmer_filter.py -h
+          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest atarva --version
       
-      - name: Test ATaRVa image
-        if: github.event_name != 'pull_request'
-        run: |
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/atarva:latest atarva --version
