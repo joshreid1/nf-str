@@ -13,6 +13,3 @@ dependencies:
   - numpy
   - polars
   - plotnine
-  - pip
-  - pip:
-    - ATaRVa>=0.3.0

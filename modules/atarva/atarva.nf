@@ -17,7 +17,7 @@ process atarva {
 	time '5 h'
     publishDir "output/atarva/", mode: "copy", saveAs: { filename ->  filename.replaceAll("${sam}\\.", "${sam}_${type}.")}
 
-    containerOptions = '--cleanenv'
+    container 'dhaksnamoorthy/atarva:v0.3.1'
 
     tag "${sam}_${type}"
 

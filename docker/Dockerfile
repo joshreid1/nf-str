@@ -49,9 +49,9 @@ RUN wget https://github.com/bahlolab/EH5_kmerfilter/archive/refs/tags/v1.0.0.tar
     && tar -xvzf v1.0.0.tar.gz \
     && rm v1.0.0.tar.gz \
     && mv EH5_kmerfilter-1.0.0 /app/EH5_kmerfilter \
-    && chmod +x /app/EH5_kmerfilter/kmer_filter.py 
-
-
+    && chmod +x /app/EH5_kmerfilter/kmer_filter.py \
+    && ln -s /app/EH5_kmerfilter/kmer_filter.py /usr/local/bin/kmer_filter.py  
+    
 USER $MAMBA_USER
 
 # base dependencies for pipeline

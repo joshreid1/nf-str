@@ -65,6 +65,5 @@ jobs:
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest trgt --version
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest scattr --version
           docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            python EH5_kmerfilter/kmer_filter.py -h
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest atarva --version
+            python kmer_filter.py -h
       
