@@ -34,6 +34,6 @@ process fetch_bam_s3 {
     
     script:
     """
-    amazon/aws-cli s3 --no-sign-request cp ${s3_url} .
+    amazon/aws-cli s3 --no-sign-request cp ${url} .
     """
 }
