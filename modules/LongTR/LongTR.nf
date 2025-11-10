@@ -30,7 +30,7 @@ process longtr {
 
     script:
     """
-    LongTR --bams ${bam} --fasta ${params.ref_fasta} --regions ${params.longtr_loci} --tr-vcf ${sam}.vcf.gz --min-mean-qual 10
+    LongTR --bams ${bam} --fasta ${params.ref_fasta} --regions ${params.longtr_loci} --tr-vcf ${sam}.vcf.gz --min-mean-qual -1e10
     # --phased-bam
     """
 }
