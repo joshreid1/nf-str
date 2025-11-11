@@ -7,6 +7,7 @@ params.ref_fasta = ''
 
 include { path; read_tsv; date_ymd } from './modules/functions'
 include { index_bam } from './modules/common/sort_bam.nf'
+include { minimap2_ubam_illumina, minimap2_ubam_ont, minimap2_ubam_pacbio } from './modules/common/map_ubam.nf'
 
 //ExpansionHunter
 include { run_expansion_hunter } from './modules/ExpansionHunter/ExpansionHunter.nf'
@@ -29,7 +30,7 @@ include { run_atarva as run_atarva } from './modules/atarva/atarva.nf'
 // TRGT
 include { run_trgt } from './modules/TRGT/TRGT.nf'
 
-manifest = read_tsv(path(params.manifest), ['sample', 'type', 'bam'])
+manifest = read_tsv(path(params.manifest), ['sample', 'type', 'bam', 'align'])
 
 workflow {
 
@@ -40,6 +41,7 @@ workflow {
             def sample = record.sample
             def type = record.type
             def bam_file = file(record.bam) 
+            def align = record.align == 'yes' ? true : false
             
             // Validate file exists
             if (!bam_file.exists()) {
@@ -51,12 +53,42 @@ workflow {
                 error "Invalid file extension for sample ${sample}"
             }
             
-            tuple(sample, type, bam_file)
+            tuple(sample, type, bam_file, align)
         }
-        .set { bam_files }
+        .branch { sample, type, bam_file, align ->
+            to_align: align == true
+            already_aligned: align == false
+        }
+        .set { alignment_check }
     
+    // Route alignment jobs by sequencing type
+    alignment_check.to_align
+        .branch { sample, type, bam_file ->
+            illumina: type == 'illumina'
+            ont: type == 'ont'
+            pacbio: type == 'pacbio'
+        }
+        .set { unaligned_by_type }
+    
+    // Align by platform (each returns tuple(sample, type, bam, bai))
+    illumina_aligned = minimap2_ubam_illumina(unaligned_by_type.illumina)
+    ont_aligned = minimap2_ubam_ont(unaligned_by_type.ont)
+    pacbio_aligned = minimap2_ubam_illumina(unaligned_by_type.pacbio)
+    
+    // Combine all aligned samples
+    all_aligned = illumina_aligned
+        .mix(ont_aligned, pacbio_aligned)
+        .map { sample, type, bam, bai -> tuple(sample, type, bam) }
+    
+    // Remove align flag from already_aligned samples
+    already_aligned_clean = alignment_check.already_aligned
+        .map { sample, type, bam_file, align -> tuple(sample, type, bam_file) }
+    
+    // Combine aligned and already-aligned samples
+    all_bams = all_aligned.mix(already_aligned_clean)
+
     // Check for index files, generate if missing
-    bam_files
+    all_bams
         .map { sample, type, bam_file ->
             def index_file
             def index_exists = false
@@ -96,10 +128,11 @@ workflow {
         }
         .set { samples }
     
-     // Run platform-specific workflows
+    // Run platform-specific workflows
     illumina_results = run_illumina(samples.illumina)
     ont_results = run_ont(samples.ont)
     pacbio_results = run_pacbio(samples.pacbio)
+    
     
     // Combine all results
     //all_results = illumina_results.mix(ont_results, pacbio_results)

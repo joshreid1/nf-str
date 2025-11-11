@@ -12,7 +12,7 @@ process index_bam {
     
     script:
     """
-    samtools index --threads 8 ${bam} 
+    samtools index --threads ${task.cpus} ${bam} 
     """
 }
 
@@ -20,18 +20,17 @@ process sort_bam {
     cpus 8
     memory '10 GB'
     time '1 hours'
-    publishDir "output/eh5/", mode: "copy"
     tag { sam }
     
     input:
     tuple val(sam), path(bam)
 
     output:
-    tuple val(sam), path("*_sorted.bam")
+    tuple val(sam), path("*,sorted.bam")
     
     script:
-    def bam_sorted = bam.replaceAll('.bam', '_sorted.bam')
+    def bam_sorted = bam.replaceAll('.bam', '.sorted.bam')
     """
-    samtools sort --threads 8 -o ${bam_sorted} ${bam}
+    samtools sort --threads ${task.cpus} -o ${bam_sorted} ${bam}
     """
 }
