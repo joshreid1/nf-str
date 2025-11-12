@@ -6,7 +6,7 @@ process minimap2_ubam_ont {
     tuple val(sam), val(type), path(bam)
 
     output:
-    tuple val(sam), val(type), path(${sam}_${type}.sorted.bam), path("${sam}_${type}.sorted.bam.bai")
+    tuple val(sam), val(type), path("${sam}_${type}.sorted.bam"), path("${sam}_${type}.sorted.bam.bai")
     
     script:
     """
@@ -24,7 +24,7 @@ process minimap2_ubam_pacbio {
     tuple val(sam), val(type), path(bam)
 
     output:
-    tuple val(sam), val(type), path(${sam}_${type}.sorted.bam), path("${sam}_${type}.sorted.bam.bai")
+    tuple val(sam), val(type), path("${sam}_${type}.sorted.bam"), path("${sam}_${type}.sorted.bam.bai")
     
     script:
     """
