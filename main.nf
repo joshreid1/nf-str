@@ -7,7 +7,7 @@ params.ref_fasta = ''
 
 include { path; read_tsv; date_ymd } from './modules/functions'
 include { index_bam } from './modules/common/sort_bam.nf'
-include { minimap2_ubam_illumina, minimap2_ubam_ont, minimap2_ubam_pacbio } from './modules/common/map_ubam.nf'
+include { minimap2_ubam_illumina; minimap2_ubam_ont; minimap2_ubam_pacbio } from './modules/common/map_ubam.nf'
 
 //ExpansionHunter
 include { run_expansion_hunter } from './modules/ExpansionHunter/ExpansionHunter.nf'
