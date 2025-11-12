@@ -89,61 +89,56 @@ workflow {
     // Combine all aligned samples
     all_aligned = illumina_aligned
         .mix(ont_aligned, pacbio_aligned)
-        .map { sample, type, bam, bai -> tuple(sample, type, bam) }
-    
-    // Remove align flag from already_aligned samples
+    // Already aligned samples need index checking
     already_aligned_clean = alignment_check.already_aligned
         .map { sample, type, bam_file, align -> tuple(sample, type, bam_file) }
-    
-    // Combine aligned and already-aligned samples
-    all_bams = all_aligned.mix(already_aligned_clean)
-
-    // Check for index files, generate if missing
-    all_bams
-        .map { sample, type, bam_file ->
-            def index_file
-            def index_exists = false
-            
-            // Determine expected index file
-            if (bam_file.toString().endsWith('.cram')) {
-                index_file = file(bam_file.toString() + '.crai')
-            } else {
-                index_file = file(bam_file.toString() + '.bai')
-            }
-            
-            // Check if index exists (works for S3 too!)
-            if (index_file.exists()) {
-                index_exists = true
-            }
-            
-            tuple(sample, type, bam_file, index_file, index_exists)
+    // Check for index files on already-aligned samples, generate if missing
+    already_aligned_clean
+    .map { sample, type, bam_file ->
+        def index_file
+        def index_exists = false
+        
+        // Determine expected index file
+        if (bam_file.toString().endsWith('.cram')) {
+            index_file = file(bam_file.toString() + '.crai')
+        } else {
+            index_file = file(bam_file.toString() + '.bai')
         }
-        .branch { sample, type, bam, index, exists ->
-            has_index: exists == true
-                return tuple(sample, type, bam, index)
-            needs_index: exists == false
-                return tuple(sample, type, bam)
+        
+        // Check if index exists
+        if (index_file.exists()) {
+            index_exists = true
         }
-        .set { indexed_check }
+        
+        tuple(sample, type, bam_file, index_file, index_exists)
+    }
+    .branch { sample, type, bam, index, exists ->
+        has_index: 
+            exists == true
+            return tuple(sample, type, bam, index)
+        needs_index: 
+            exists == false
+            return tuple(sample, type, bam)
+    }
+    .set { already_aligned_indexed }
+    // Generate missing indexes for already-aligned samples
+    already_aligned_with_new_indexes = index_bam(already_aligned_indexed.needs_index)
     
-    // Generate missing indexes
-    generated_indexes = index_bam(indexed_check.needs_index)
-    
-    // Combine and route to platform-specific workflows
-    samples_with_index = indexed_check.has_index
-        .mix(generated_indexes)
-        .branch { sample, type, bam, index ->
-            illumina: 
-                type == 'illumina'
-                return tuple(sample, type, bam, index)
-            ont: 
-                type == 'ont'
-                return tuple(sample, type, bam, index)
-            pacbio: 
-                type == 'pacbio'
-                return tuple(sample, type, bam, index)
-        }
-        .set { samples }
+    all_samples_with_index = all_aligned
+    .mix(already_aligned_indexed.has_index)
+    .mix(already_aligned_with_new_indexes)
+    .branch { sample, type, bam, index ->
+        illumina: 
+            type == 'illumina'
+            return tuple(sample, type, bam, index)
+        ont: 
+            type == 'ont'
+            return tuple(sample, type, bam, index)
+        pacbio: 
+            type == 'pacbio'
+            return tuple(sample, type, bam, index)
+    }
+    .set { samples }
     
     // Run platform-specific workflows
     illumina_results = run_illumina(samples.illumina)
