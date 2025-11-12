@@ -41,7 +41,7 @@ workflow {
             def sample = record.sample
             def type = record.type
             def bam_file = file(record.bam) 
-            def align = record.align == 'yes' ? true : false
+            def align = record.align?.toLowerCase()?.trim() == 'yes'
             
             // Validate file exists
             if (!bam_file.exists()) {
@@ -64,21 +64,22 @@ workflow {
         }
         .set { alignment_check }
     
+
     // Route alignment jobs by sequencing type
     alignment_check.to_align
-        .branch { sample, type, bam_file ->
-            illumina: 
-                type == 'illumina'
-                return tuple(sample, type, bam_file)
-            ont: 
-                type == 'ont'
-                return tuple(sample, type, bam_file)
-            pacbio: 
-                type == 'pacbio'
-                return tuple(sample, type, bam_file)
-        }
-        .set { unaligned_by_type }
-
+    .map { tuple(it[0], it[1], it[2]) }  // Drop the align flag
+    .branch { sample, type, bam_file ->
+        illumina: 
+            type == 'illumina'
+            return tuple(sample, type, bam_file)
+        ont: 
+            type == 'ont'
+            return tuple(sample, type, bam_file)
+        pacbio: 
+            type == 'pacbio'
+            return tuple(sample, type, bam_file)
+    }
+    .set { unaligned_by_type }
 
     // Align by platform (each returns tuple(sample, type, bam, bai))
     illumina_aligned = minimap2_ubam_illumina(unaligned_by_type.illumina)
