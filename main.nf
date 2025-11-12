@@ -69,9 +69,7 @@ workflow {
             pacbio: type == 'pacbio'
         }
         .set { unaligned_by_type }
-    
-    alignment_check.view()
-    unaligned_by_type.view()
+
 
     // Align by platform (each returns tuple(sample, type, bam, bai))
     illumina_aligned = minimap2_ubam_illumina(unaligned_by_type.illumina)
