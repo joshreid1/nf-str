@@ -70,9 +70,9 @@ workflow {
         }
         .set { unaligned_by_type }
     
-    alignent_check.view()
+    alignment_check.view()
     unaligned_by_type.view()
-    
+
     // Align by platform (each returns tuple(sample, type, bam, bai))
     illumina_aligned = minimap2_ubam_illumina(unaligned_by_type.illumina)
     ont_aligned = minimap2_ubam_ont(unaligned_by_type.ont)
