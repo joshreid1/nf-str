@@ -73,7 +73,7 @@ workflow {
     // Align by platform (each returns tuple(sample, type, bam, bai))
     illumina_aligned = minimap2_ubam_illumina(unaligned_by_type.illumina)
     ont_aligned = minimap2_ubam_ont(unaligned_by_type.ont)
-    pacbio_aligned = minimap2_ubam_illumina(unaligned_by_type.pacbio)
+    pacbio_aligned = minimap2_ubam_pacbio(unaligned_by_type.pacbio)
     
     // Combine all aligned samples
     all_aligned = illumina_aligned
