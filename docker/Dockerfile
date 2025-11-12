@@ -39,9 +39,9 @@ RUN wget https://github.com/G2Lab/scattr/releases/download/0.2.2/scattr-0.2.2-li
     && mv scattr /usr/local/bin/
 
 RUN wget https://github.com/PacificBiosciences/trgt/releases/download/v4.1.0/trgt-v4.1.0-x86_64-unknown-linux-gnu.tar.gz \
-    && tar -xvzf trgt-v4.0.0-x86_64-unknown-linux-gnu.tar.gz \
-    && rm trgt-v4.0.0-x86_64-unknown-linux-gnu.tar.gz \
-    && mv trgt-v4.0.0-x86_64-unknown-linux-gnu/trgt /usr/local/bin/
+    && tar -xvzf trgt-v4.1.0-x86_64-unknown-linux-gnu.tar.gz \
+    && rm trgt-v4.1.0-x86_64-unknown-linux-gnu.tar.gz \
+    && mv trgt-v4.1.0-x86_64-unknown-linux-gnu/trgt /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/ExpansionHunter /usr/local/bin/scattr /usr/local/bin/trgt
 
