@@ -56,17 +56,26 @@ workflow {
             tuple(sample, type, bam_file, align)
         }
         .branch { sample, type, bam_file, align ->
-            to_align: align == true
+            to_align: 
+                align == true
+                return tuple(sample, type, bam_file)
             already_aligned: align == false
+                return tuple(sample, type, bam_file)
         }
         .set { alignment_check }
     
     // Route alignment jobs by sequencing type
     alignment_check.to_align
         .branch { sample, type, bam_file ->
-            illumina: type == 'illumina'
-            ont: type == 'ont'
-            pacbio: type == 'pacbio'
+            illumina: 
+                type == 'illumina'
+                return tuple(sample, type, bam_file)
+            ont: 
+                type == 'ont'
+                return tuple(sample, type, bam_file)
+            pacbio: 
+                type == 'pacbio'
+                return tuple(sample, type, bam_file)
         }
         .set { unaligned_by_type }
 
@@ -123,9 +132,15 @@ workflow {
     samples_with_index = indexed_check.has_index
         .mix(generated_indexes)
         .branch { sample, type, bam, index ->
-            illumina: type == 'illumina'
-            ont: type == 'ont'
-            pacbio: type == 'pacbio'
+            illumina: 
+                type == 'illumina'
+                return tuple(sample, type, bam, index)
+            ont: 
+                type == 'ont'
+                return tuple(sample, type, bam, index)
+            pacbio: 
+                type == 'pacbio'
+                return tuple(sample, type, bam, index)
         }
         .set { samples }
     
