@@ -11,7 +11,7 @@ process minimap2_ubam_ont {
     script:
     """
     samtools fastq -T '*' ${bam} | \\
-      minimap2 -x map-ont -a  -t ${task.cpus} --MD  ${params.ref_fa} - | \\
+      minimap2 -x map-ont -a  -t ${task.cpus} --MD  ${params.ref_fasta} - | \\
       samtools sort  -@ ${task.cpus} -o ${sam}_${type}.sorted.bam --write-index -
     """
 }
@@ -28,7 +28,7 @@ process minimap2_ubam_pacbio {
     
     script:
     """
-    samtools fastq -T '*' ${bam} |  minimap2 -x map-hifi -a -t ${task.cpus} --MD  ${params.ref_fa} - | samtools sort -@ ${task.cpus} -o ${sam}_${type}.sorted.bam --write-index -
+    samtools fastq -T '*' ${bam} |  minimap2 -x map-hifi -a -t ${task.cpus} --MD  ${params.ref_fasta} - | samtools sort -@ ${task.cpus} -o ${sam}_${type}.sorted.bam --write-index -
     """
 }
 
@@ -44,7 +44,7 @@ process minimap2_ubam_illumina {
     script:
     """
     samtools fastq -T "*" -@ ${task.cpus} ${bam} | \\
-        minimap2 -ax sr -t ${task.cpus} ${params.ref_fa} - | \\
+        minimap2 -ax sr -t ${task.cpus} ${params.ref_fasta} - | \\
         samtools sort -@ ${task.cpus} -o ${sam}_${type}.sorted.bam --write-index -
 
     """
