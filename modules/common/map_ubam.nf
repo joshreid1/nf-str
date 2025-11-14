@@ -1,7 +1,11 @@
 process minimap2_ubam_ont {
+    memory = { 32.GB * task.attempt }
+    errorStrategy = { (task.exitStatus == 143 || task.exitStatus == 137) ? 'retry' : 'terminate' }
+
     cpus 8
     tag { sam }
     
+
     input:
     tuple val(sam), val(type), path(bam)
 
@@ -17,6 +21,9 @@ process minimap2_ubam_ont {
 }
 
 process minimap2_ubam_pacbio {
+    memory = { 32.GB * task.attempt }
+    errorStrategy = { (task.exitStatus == 143 || task.exitStatus == 137) ? 'retry' : 'terminate' }
+
     cpus 8
     tag { sam }
     
@@ -33,7 +40,10 @@ process minimap2_ubam_pacbio {
 }
 
 process minimap2_ubam_illumina {
-    tag { sam}
+    memory = { 32.GB * task.attempt }
+    errorStrategy = { (task.exitStatus == 143 || task.exitStatus == 137) ? 'retry' : 'terminate' }
+
+    tag {sam}
     cpus 8
     input:
     tuple val(sam), val(type), path(bam)
