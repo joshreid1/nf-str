@@ -7,6 +7,7 @@ dependencies:
   - htslib
   - bcftools
   - samtools
+  - minimap2
   - scipy
   - scikit-learn
   - pysam

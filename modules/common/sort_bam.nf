@@ -1,4 +1,22 @@
-process sort_index_bam {
+process index_bam {
+    cpus 8
+    memory '10 GB'
+    time '1 hours'
+    tag { sam }
+    
+    input:
+    tuple val(sam), val(type), path(bam)
+
+    output:
+    tuple val(sam), val(type),  path(bam), path("${bam}*")
+    
+    script:
+    """
+    samtools index --threads ${task.cpus} ${bam} 
+    """
+}
+
+process sort_bam {
     cpus 8
     memory '10 GB'
     time '1 hours'
@@ -8,11 +26,11 @@ process sort_index_bam {
     tuple val(sam), path(bam)
 
     output:
-    tuple val(sam), path("${sam}_sorted.bam"), path("${sam}_sorted.bam.bai")
+    tuple val(sam), path("*,sorted.bam")
     
     script:
+    def bam_sorted = bam.replaceAll('.bam', '.sorted.bam')
     """
-    samtools sort --threads 8 -o ${sam}_sorted.bam ${bam}
-    samtools index --threads 8 ${sam}_sorted.bam
+    samtools sort --threads ${task.cpus} -o ${bam_sorted} ${bam}
     """
 }
