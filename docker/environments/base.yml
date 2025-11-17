@@ -8,6 +8,7 @@ dependencies:
   - bcftools
   - samtools
   - minimap2
+  - cyvcf2
   - scipy
   - scikit-learn
   - pysam
