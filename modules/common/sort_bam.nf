@@ -23,10 +23,10 @@ process sort_bam {
     tag { sam }
     
     input:
-    tuple val(sam), path(bam)
+    tuple val(sam), val(type), path(bam)
 
     output:
-    tuple val(sam), path("*,sorted.bam")
+    tuple val(sam), val(type), path("*.sorted.bam")
     
     script:
     def bam_sorted = bam.replaceAll('.bam', '.sorted.bam')
