@@ -17,7 +17,7 @@ process minimap2_ubam_ont {
     samtools fastq -T '*' ${bam} | \\
       minimap2 -x map-ont -a  -t ${task.cpus} --MD  ${params.ref_fasta} - | \\
       samtools sort -O bam -@ ${task.cpus} -o ${sam}_${type}.sorted.bam -
-    samtools index --@ ${task.cpus} ${sam}_${type}.sorted.bam
+    samtools index -@ ${task.cpus} ${sam}_${type}.sorted.bam
     """
 }
 
