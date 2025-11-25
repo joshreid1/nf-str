@@ -32,7 +32,7 @@ RUN wget https://github.com/G2Lab/scattr/releases/download/0.2.2/scattr-0.2.2-li
     && rm scattr-0.2.2-linux-x86_64.tar.gz \
     && mv scattr /usr/local/bin/
 
-RUN chmod +x /usr/local/bin/ExpansionHunter /usr/local/bin/scattr /usr/local/bin/trgt
+RUN chmod +x /usr/local/bin/scattr
 
 RUN wget https://github.com/bahlolab/EH5_kmerfilter/archive/refs/tags/v1.0.0.tar.gz  \
     && tar -xvzf v1.0.0.tar.gz \
