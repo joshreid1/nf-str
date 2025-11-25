@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: stuartlee/${{ github.repository }}
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/nf-str
 
 jobs:
   build:
@@ -61,9 +61,7 @@ jobs:
       - name: Test main image
         if: github.event_name != 'pull_request'
         run: |
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ExpansionHunter --version
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest trgt --version
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest scattr --version
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
+          docker run --rm ${{ env.IMAGE_NAME }}:latest scattr --version
+          docker run --rm ${{ env.IMAGE_NAME }}:latest \
             python EH5_kmerfilter/kmer_filter.py -h
       
