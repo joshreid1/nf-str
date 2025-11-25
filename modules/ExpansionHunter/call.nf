@@ -7,6 +7,8 @@ process call {
     publishDir "output/eh5/", mode: "copy"
     tag { sam }
 
+    container 'quay.io/biocontainers/expansionhunter:5.0.0--hc26b3af_5'
+
     input:
         tuple val(sam), val(type), path(bam), path(bai)
 
