@@ -20,6 +20,8 @@ process trgt {
 
     tag "${sam}_${type}"
 
+    container 'quay.io/biocontainers/trgt:4.1.0--h9ee0642_0'
+
     input:
         tuple val(sam), val(type), path(bam), path(bai)
 
