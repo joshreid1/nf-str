@@ -21,7 +21,7 @@ Nextflow cohort level STR calling pipeline for short read and long read sequenci
     ```
 * **Params**  
   * `id` - Unique name for run. Used to name output files.
-  * `manifest` - Path to TSV file with first column containing sample ID, second column containing sequencing type (i.e. illumina, ont or pacbio), and third column containing path to BAM/CRAM file. No headers or row names. 
+  * `manifest` - Path to TSV file with first column containing sample ID, second column containing sequencing type (i.e. illumina, ont or pacbio), and third column containing path to BAM/CRAM file and a fourth column designating whether to align / realign the reads in the BAM file. No headers or row name allowed in the tsv. 
   * `callers` - List of STR callers, default is all of them for the releveant sequencing type.
 * First run:  
 `nextflow run /PATH/TO/nf-str -profile singularity`
