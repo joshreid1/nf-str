@@ -9,6 +9,7 @@ process download_s3_files {
     cpus 4
     memory '4 GB'
     time '12h'
+    maxForks = 20  // Limit to 20 concurrent downloads
 
     input:
     tuple val(sample), val(type), val(s3_uri), val(align)
@@ -19,11 +20,12 @@ process download_s3_files {
     script:
     filename = s3_uri.tokenize('/')[-1]
     """
-    # Configure AWS CLI for optimized parallel transfers
-    aws configure set default.s3.max_concurrent_requests 50
-    aws configure set default.s3.max_bandwidth 500MB/s
-    aws configure set default.s3.multipart_threshold 64MB
-    aws configure set default.s3.multipart_chunksize 16MB
+    # Set AWS CLI config via environment variables (no config file modification)
+    export AWS_MAX_CONCURRENT_REQUESTS=50
+    export AWS_MAX_BANDWIDTH=500MB/s
+    export AWS_MULTIPART_THRESHOLD=64MB
+    export AWS_MULTIPART_CHUNKSIZE=16MB
+    export AWS_NO_SIGN_REQUEST=YES
 
     # Download file from S3
     aws s3 cp --no-sign-request ${s3_uri} ${filename}
