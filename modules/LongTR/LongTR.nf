@@ -17,7 +17,6 @@ process longtr {
 	time '5 h'
     publishDir "output/longtr/", mode: "copy", saveAs: { filename ->  filename.replaceAll("${sam}\\.", "${sam}_${type}.")}
 
-
     tag "${sam}_${type}"
 
     container 'quay.io/biocontainers/longtr:1.2--h077b44d_1'
@@ -30,7 +29,7 @@ process longtr {
 
     script:
     """
-    LongTR --bams ${bam} --fasta ${params.ref_fasta} --regions ${params.longtr_loci} --tr-vcf ${sam}.vcf.gz --min-mean-qual -1e10
+    LongTR --bams ${bam} --fasta ${params.ref_fasta} --regions ${params.longtr_loci} --tr-vcf ${sam}.vcf.gz --min-mean-qual -1e10 --bam-samps ${sam} --bam-libs ${sam} 
     # --phased-bam
     """
 }

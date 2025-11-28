@@ -4,13 +4,18 @@ nextflow.enable.dsl=2
 params.id = ''
 params.manifest = ''
 params.ref_fasta = ''
+params.illumina_ref_fasta = '/stornext/Bioinf/data/lab_bahlo/ref_db/human/hg38/1000G/GRCh38_full_analysis_set_plus_decoy_hla.fa'
 
 include { path; read_tsv; date_ymd } from './modules/functions'
 include { index_bam } from './modules/common/sort_bam.nf'
+include { download_s3_files } from './modules/common/download_s3_files.nf'
 include { minimap2_ubam_illumina; minimap2_ubam_ont; minimap2_ubam_pacbio } from './modules/common/map_ubam.nf'
 
 //ExpansionHunter
 include { run_expansion_hunter } from './modules/ExpansionHunter/ExpansionHunter.nf'
+
+//ExpansionHunterDeNovo
+include { run_expansion_hunter_denovo } from './modules/ExpansionHunterDenovo/ExpansionHunterDenovo.nf'
 
 //Scatter
 include { run_scattr } from './modules/ScatTR/ScatTR.nf'
@@ -30,7 +35,7 @@ include { run_atarva as run_atarva } from './modules/atarva/atarva.nf'
 // TRGT
 include { run_trgt } from './modules/TRGT/TRGT.nf'
 
-manifest = read_tsv(path(params.manifest), ['sample', 'type', 'bam', 'align'])
+manifest = read_tsv(path(params.manifest), ['sample', 'type', 'url', 'align'])
 
 workflow {
     // Read manifest TSV and create channel
@@ -39,21 +44,16 @@ workflow {
         .map { record -> 
             def sample = record.sample
             def type = record.type
-            def bam_file = file(record.bam) 
+            def bam_url = record.url 
             def align = record.align?.toLowerCase()?.trim() == 'yes'
-            
-            // Validate file exists
-            if (!bam_file.exists()) {
-                error "BAM file does not exist: ${record.bam} for sample: ${sample}"
-            }
-            
-            // Validate extension
-            if (!bam_file.name.endsWith('.bam') && !bam_file.name.endsWith('.cram')) {
-                error "Invalid file extension for sample ${sample}"
-            }
-            
-            tuple(sample, type, bam_file, align)
+
+            tuple(sample, type, bam_url, align)
         }
+        .set { s3_input_ch }
+
+    download_s3_files(s3_input_ch)
+
+    download_s3_files.out
         .branch { 
             to_align: it[3] == true
                 return tuple(it[0], it[1], it[2])
@@ -76,11 +76,12 @@ workflow {
                 return tuple(sample, type, bam_file)
         }
         .set { unaligned_by_type }
+    
 
     // Align by platform (each returns tuple(sample, type, bam, bai))
     illumina_aligned = minimap2_ubam_illumina(unaligned_by_type.illumina)
     ont_aligned = minimap2_ubam_ont(unaligned_by_type.ont)
-    pacbio_aligned = minimap2_ubam_pacbio(unaligned_by_type.pacbio)
+    pacbio_aligned = minimap2_ubam_pacbio(unaligned_by_type.pacbio)  
     
     // Combine all newly aligned samples (already have index from alignment)
     all_aligned = illumina_aligned
@@ -166,10 +167,12 @@ workflow run_illumina {
         sample_ch
     main:
         eh_results = sample_ch  | run_expansion_hunter
+        ehdn_results = sample_ch | run_expansion_hunter_denovo
         //scattr_results = sample_ch | run_scattr
             
     emit:
         eh_results
+        ehdn_results
         //scattr_results
 }
 
