@@ -3,8 +3,9 @@ nextflow.enable.dsl=2
 
 params.id = ''
 params.manifest = ''
-params.ref_fasta = ''
+params.ref_fasta = '/stornext/Bioinf/data/lab_bahlo/ref_db/human/hg38/1000G/GRCh38_full_analysis_set_plus_decoy_hla.fa'
 params.illumina_ref_fasta = '/stornext/Bioinf/data/lab_bahlo/ref_db/human/hg38/1000G/GRCh38_full_analysis_set_plus_decoy_hla.fa'
+params.cleanup_intermediates = false
 
 include { path; read_tsv; date_ymd } from './modules/functions'
 include { index_bam } from './modules/common/sort_bam.nf'
@@ -39,53 +40,60 @@ manifest = read_tsv(path(params.manifest), ['sample', 'type', 'url', 'align'])
 
 workflow {
     // Read manifest TSV and create channel
-    Channel
+    s3_input_ch = Channel
         .from(manifest)
         .map { record -> 
             def sample = record.sample
             def type = record.type
             def bam_url = record.url 
             def align = record.align?.toLowerCase()?.trim() == 'yes'
-
             tuple(sample, type, bam_url, align)
         }
-        .set { s3_input_ch }
 
-    download_s3_files(s3_input_ch)
-
-    download_s3_files.out
-        .branch { 
-            to_align: it[3] == true
-                return tuple(it[0], it[1], it[2])
-            already_aligned: it[3] == false
-                return tuple(it[0], it[1], it[2])
-        }
-        .set { alignment_check }
+    // Continuous flow: each step consumes as data becomes available
+    downloaded = download_s3_files(s3_input_ch)
     
-    // Route alignment jobs by sequencing type
-    alignment_check.to_align
+    alignment_check = downloaded
+        .branch { sample, type, bam_file, needs_align ->
+            to_align: needs_align
+                return tuple(sample, type, bam_file)
+            already_aligned: !needs_align
+                return tuple(sample, type, bam_file)
+        }
+    
+    // Route alignment jobs by sequencing type (continuous)
+    unaligned_by_type = alignment_check.to_align
         .branch { sample, type, bam_file ->
-            illumina: 
-                type == 'illumina'
+            illumina: type == 'illumina'
                 return tuple(sample, type, bam_file)
-            ont: 
-                type == 'ont'
+            ont: type == 'ont'
                 return tuple(sample, type, bam_file)
-            pacbio: 
-                type == 'pacbio'
+            pacbio: type == 'pacbio'
                 return tuple(sample, type, bam_file)
         }
-        .set { unaligned_by_type }
-    
-
-    // Align by platform (each returns tuple(sample, type, bam, bai))
+  
+    // Align by platform - starts immediately as unaligned items arrive
     illumina_aligned = minimap2_ubam_illumina(unaligned_by_type.illumina)
     ont_aligned = minimap2_ubam_ont(unaligned_by_type.ont)
-    pacbio_aligned = minimap2_ubam_pacbio(unaligned_by_type.pacbio)  
+    pacbio_aligned = minimap2_ubam_pacbio(unaligned_by_type.pacbio)
+
+
+    ont_aligned.cleanup_status.view()
+    // Trigger cleanup for successful alignments
+    ont_aligned.cleanup_status
+        .filter { sample_id, bam, status -> status == "SUCCESS" }
+        | conditional_cleanup_ont
+
+    pacbio_aligned.cleanup_status.view()
+    // Trigger cleanup for successful alignments
+    pacbio_aligned.cleanup_status
+        .filter { sample_id, bam, status -> status == "SUCCESS" }
+        | conditional_cleanup_pacbio  
+    
     
     // Combine all newly aligned samples (already have index from alignment)
     all_aligned = illumina_aligned
-        .mix(ont_aligned, pacbio_aligned)
+        .mix(ont_aligned.aligned, pacbio_aligned.aligned)
     
     // Already aligned samples - need to check/generate index
     already_aligned_samples = alignment_check.already_aligned
@@ -138,6 +146,7 @@ workflow {
                 return tuple(sample, type, bam, index)
         }
         .set { samples }
+
     
     // Run platform-specific workflows
     illumina_results = run_illumina(samples.illumina)
@@ -207,4 +216,36 @@ workflow run_pacbio {
         longtr_results
         atarva_results
         strkit_results
+}
+
+
+
+process conditional_cleanup_ont {
+    when params.cleanup_intermediates == true
+    
+    input:
+    tuple val(sam), path(bam), val(status)
+    
+    script:
+    """
+    echo "Symlink: ${bam}"
+    echo "Realpath: \$(realpath ${bam})"
+    #rm -f \$(realpath ${bam})
+    truncate -s 0 \$(realpath ${bam})
+    """
+}
+
+
+process conditional_cleanup_pacbio {
+    when params.cleanup_intermediates == true
+    
+    input:
+    tuple val(sam), path(bam), val(status)
+    
+    script:
+    """
+    echo "Symlink: ${bam}"
+    echo "Realpath: \$(realpath ${bam})"
+    truncate -s 0 \$(realpath ${bam})
+    """
 }

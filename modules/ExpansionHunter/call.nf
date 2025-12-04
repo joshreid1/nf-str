@@ -4,7 +4,7 @@ process call {
     cpus 1
 	memory {'2 GB'}
 	time '5 h'
-    publishDir "output/eh5/", mode: "copy"
+    publishDir "output/eh5/", mode: "copy", pattern: "*.{json,vcf}"
     tag { sam }
 
     container 'quay.io/biocontainers/expansionhunter:5.0.0--hc26b3af_5'

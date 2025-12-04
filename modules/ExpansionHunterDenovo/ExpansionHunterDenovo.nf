@@ -11,8 +11,6 @@ workflow run_expansion_hunter_denovo {
         // Create manifest using collectFile operator
         manifest_ch = profile_ch
             .collectFile(name: 'ehdn_manifest.tsv', newLine: true) { sam, json_path ->
-                print(sam)
-                print(json_path)
                 "${sam}\tcontrol\t${json_path}"
             }
         

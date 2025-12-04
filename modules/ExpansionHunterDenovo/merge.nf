@@ -18,5 +18,9 @@ process merge {
 		--manifest ${manifest} \
 		--reference ${params.illumina_ref_fasta} \
 		--output-prefix ${params.id}
+
+        # Create a ~100MB file
+        dd if=/dev/zero of=step1.txt bs=1M count=100
+        echo "Step 1 complete" >> step1.txt
     """
 }
