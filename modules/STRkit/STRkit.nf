@@ -19,7 +19,7 @@ process strkit {
 
     tag "${sam}_${type}"
 
-    container 'ghcr.io/davidlougheed/strkit:latest'
+    container 'ghcr.io/davidlougheed/strkit:0.24.2'
 
     input:
         tuple val(sam), val(type), path(bam), path(bai)
@@ -31,8 +31,8 @@ process strkit {
     """
     strkit call \
     ${bam} --ref ${params.ref_fasta} --loci ${params.strkit_loci} \
-    --vcf ${sam}_${type}.vcf --seed 123 \
-    --hq --realign --no-tsv
+    --vcf ${sam}_${type}.vcf --sample-id ${sam} --seed 123 --no-tsv \
+    --hq --realign
     #--processes X --use-hp --incorporate-snvs path/to/dbsnp/00-common_all.vcf.gz 
     """
 }
