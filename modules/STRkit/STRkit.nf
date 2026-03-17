@@ -1,6 +1,3 @@
-params.caller = 'STRkit'
-params.strkit_loci = "${projectDir}/catalogues/STRkit_pathogenic_assoc.hg38.tsv"  
-
 workflow run_strkit {
     take:
         sam_bam_ch
@@ -13,7 +10,7 @@ workflow run_strkit {
 
 process strkit {
     cpus 1
-	memory {'2 GB'}
+	memory {'4 GB'}
 	time '5 h'
     publishDir "output/strkit/", mode: "copy"
 

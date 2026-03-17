@@ -3,8 +3,9 @@ process download_s3_files {
 
     publishDir "output/alignments/", mode: 'copy', enabled: "${ !align }"
 
-	module 'awscli'
-	//container 'quay.io/biocontainers/awscli:1.8.3--0' Update when BioContainers back online
+    module 'awscli'
+    container null
+    //container 'quay.io/biocontainers/awscli:1.8.3--py35_0'
 
     cpus 4
     memory '4 GB'

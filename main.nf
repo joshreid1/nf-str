@@ -1,15 +1,25 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
 
-params.id = ''
-params.manifest = ''
+params.id = 'v3'
 params.ref_fasta = '/stornext/Bioinf/data/lab_bahlo/ref_db/human/hg38/1000G/GRCh38_full_analysis_set_plus_decoy_hla.fa'
 params.illumina_ref_fasta = '/stornext/Bioinf/data/lab_bahlo/ref_db/human/hg38/1000G/GRCh38_full_analysis_set_plus_decoy_hla.fa'
+
+// Manifest for downloading and aligning data (if not skipping download/align steps)
+params.download_manifest = '/vast/scratch/users/reid.j/nf-str-run/v3/long_submission.tsv'
 params.cleanup_intermediates = false
 
+// Alternate manifest for already downloaded/aligned data (if skipping download/align steps)
+params.aligned_manifest = '/vast/projects/reidj-project/nf-str/test_manifest.tsv'
 params.skip_download_align = true
-params.aligned_manifest = '/vast/scratch/users/reid.j/nf-str-run/test_manifest.tsv'
 
+// Repeat catalogues
+params.atarva_loci = "${projectDir}/repeat_catalogs/STRchive-disease-loci-hg38_atarva.bed.gz"
+params.eh5_loci = "${projectDir}/repeat_catalogs/STRchive-disease-loci-hg38_expansionhunter.json"
+params.longtr_loci = "${projectDir}/repeat_catalogs/STRchive-disease-loci-hg38_longtr.bed"
+params.straglr_loci = "${projectDir}/repeat_catalogs/STRchive-disease-loci-hg38_straglr.bed"
+params.strkit_loci = "${projectDir}/repeat_catalogs/STRchive-disease-loci-hg38_strkit.bed"
+params.trgt_loci = "${projectDir}/repeat_catalogs/STRchive-disease-loci-hg38_trgt.bed"
 
 include { path; read_tsv; date_ymd } from './modules/functions'
 include { index_bam } from './modules/common/sort_bam.nf'
@@ -44,8 +54,7 @@ workflow {
     if (params.skip_download_align && params.aligned_manifest) {
         // Use alternate manifest for already downloaded/aligned data
         aligned_manifest = read_tsv(path(params.aligned_manifest), ['sample', 'type', 'bam_path'])
-        println aligned_manifest
-
+        
         all_samples_with_index = Channel
             .from(aligned_manifest)
             .map { record -> 
@@ -146,7 +155,6 @@ workflow {
         all_samples_with_index = all_aligned
             .mix(indexed_check.has_index, generated_indexes)
     }
-    
     // Common downstream processing (same for both entry points)
     all_samples_with_index
         .branch { sample, type, bam, index ->
@@ -189,12 +197,12 @@ workflow run_illumina {
         sample_ch
     main:
         eh_results = sample_ch  | run_expansion_hunter
-        ehdn_results = sample_ch | run_expansion_hunter_denovo
+        //ehdn_results = sample_ch | run_expansion_hunter_denovo
         //scattr_results = sample_ch | run_scattr
             
     emit:
         eh_results
-        ehdn_results
+        //ehdn_results
         //scattr_results
 }
 

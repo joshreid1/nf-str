@@ -1,6 +1,6 @@
 params.caller = 'LongTR'
-//params.longtr_loci = "${projectDir}/catalogues/STRchive-disease-loci.hg38.longTR.bed"
-params.longtr_loci = "/vast/scratch/users/reid.j/nf-str-run/trexplorer-catalog/repeat_catalog_v1.hg38.1_to_1000bp_motifs.bed"  
+params.longtr_loci = "${projectDir}/catalogues/STRchive-disease-loci.hg38.longTR.bed"
+//params.longtr_loci = "/vast/scratch/users/reid.j/nf-str-run/trexplorer-catalog/repeat_catalog_v1.hg38.1_to_1000bp_motifs.bed"  
 
 workflow run_longtr {
     take:
